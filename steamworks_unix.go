@@ -426,7 +426,7 @@ func (s steamInput) GetInputTypeForHandle(inputHandle InputHandle_t) ESteamInput
 }
 
 func (s steamInput) Init(bExplicitlyCallRunFrame bool) bool {
-	var callRunFrame uint64
+	var callRunFrame uintptr
 	if bExplicitlyCallRunFrame {
 		callRunFrame = 1
 	}
