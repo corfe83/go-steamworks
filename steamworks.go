@@ -96,34 +96,6 @@ const (
 	ELeaderboardUploadScoreMethodForceUpdate ELeaderboardUploadScoreMethod = 2
 )
 
-type leaderboardFindResult struct {
-	steamLeaderboard SteamLeaderboard_t
-	leaderboardFound bool
-}
-
-type leaderboardScoresDownloaded struct {
-	steamLeaderboard        SteamLeaderboard_t
-	steamLeaderboardEntries SteamLeaderboardEntries_t
-	entryCount              int32
-}
-
-type leaderboardScoreUploaded struct {
-	success            bool
-	steamLeaderboard   SteamLeaderboard_t
-	score              int32
-	scoreChanged       bool
-	globalRankNew      int32
-	globalRankPrevious int32
-}
-
-type leaderboardEntry struct {
-	steamIDUser CSteamID
-	globalRank  int32
-	score       int32
-	details     int32
-	UGC         UGCHandle_t
-}
-
 // What go users see
 type LeaderboardEntry struct {
 	steamIDUser CSteamID
@@ -173,6 +145,7 @@ type ISteamUserStats interface {
 	StoreStats() bool
 	FindLeaderboard(name string) SteamAPICall_t
 	DownloadLeaderboardEntries(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardDataRequest ELeaderboardDataRequest, nRangeStart, nRangeEnd int32) SteamAPICall_t
+	GetDownloadedLeaderboardEntry(hSteamLeaderboardEntries SteamLeaderboardEntries_t, index int32, entry *LeaderboardEntry_t, details []int32) bool
 	UploadLeaderboardScore(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardUploadScoreMethod ELeaderboardUploadScoreMethod, nScore int32, pScoreDetails []int32) SteamAPICall_t
 	GetLeaderboardEntryCount(hSteamLeaderboard SteamLeaderboard_t) int32
 }

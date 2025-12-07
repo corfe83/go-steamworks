@@ -6,6 +6,7 @@ package steamworks
 import (
 	"bytes"
 	"fmt"
+	"runtime"
 	"unsafe"
 
 	"github.com/ebitengine/purego"
@@ -293,32 +294,22 @@ func (s steamUserStats) DownloadLeaderboardEntries(hSteamLeaderboard SteamLeader
 	return ptrAPI_ISteamUserStats_DownloadLeaderboardEntries(uintptr(s), hSteamLeaderboard, eLeaderboardDataRequest, nRangeStart, nRangeEnd)
 }
 
-func (s steamUserStats) GetDownloadedLeaderboardEntry(hSteamLeaderboardEntries SteamLeaderboardEntries_t, index int32) (success bool, entry LeaderboardEntry) {
-	var rawEntry leaderboardEntry_t
-	success = ptrAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(uintptr(s), hSteamLeaderboardEntries, index, uintptr(unsafe.Pointer(&rawEntry)), 0, 0)
-	if !success {
-		return false, LeaderboardEntry{}
+func (s steamUserStats) GetDownloadedLeaderboardEntry(hSteamLeaderboardEntries SteamLeaderboardEntries_t, index int32, entry *LeaderboardEntry_t, details []int32) bool {
+	defer runtime.KeepAlive(details)
+	var detailsPtr uintptr
+	if len(details) > 0 {
+		detailsPtr = uintptr(unsafe.Pointer(&details[0]))
 	}
-
-	readEntry := rawEntry.Read()
-	if readEntry.details > 0 {
-		entry.details = make([]int32, readEntry.details)
-		success = ptrAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(uintptr(s), hSteamLeaderboardEntries, index, uintptr(unsafe.Pointer(&rawEntry)), uintptr(unsafe.Pointer(&entry.details[0])), readEntry.details)
-		if !success {
-			return false, LeaderboardEntry{}
-		}
-	}
-
-	entry.globalRank = readEntry.globalRank
-	entry.score = readEntry.score
-	entry.steamIDUser = readEntry.steamIDUser
-	entry.UGC = readEntry.UGC
-
-	return
+	return ptrAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(uintptr(s), hSteamLeaderboardEntries, index, uintptr(unsafe.Pointer(entry)), detailsPtr, int32(len(details)))
 }
 
 func (s steamUserStats) UploadLeaderboardScore(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardUploadScoreMethod ELeaderboardUploadScoreMethod, score int32, details []int32) SteamAPICall_t {
-	return ptrAPI_ISteamUserStats_UploadLeaderboardScore(uintptr(s), hSteamLeaderboard, eLeaderboardUploadScoreMethod, score, uintptr(unsafe.Pointer(&details[0])), int32(len(details)))
+	defer runtime.KeepAlive(details)
+	var detailsPtr uintptr
+	if len(details) > 0 {
+		detailsPtr = uintptr(unsafe.Pointer(&details[0]))
+	}
+	return ptrAPI_ISteamUserStats_UploadLeaderboardScore(uintptr(s), hSteamLeaderboard, eLeaderboardUploadScoreMethod, score, detailsPtr, int32(len(details)))
 }
 func (s steamUserStats) GetLeaderboardEntryCount(hSteamLeaderboard SteamLeaderboard_t) int32 {
 	return ptrAPI_ISteamUserStats_GetLeaderboardEntryCount(uintptr(s), hSteamLeaderboard)
@@ -343,9 +334,9 @@ func (s steamUtils) ShowFloatingGamepadTextInput(keyboardMode EFloatingGamepadTe
 }
 
 // Basically a member function, but implemented as a standalone function because of generics limitations.
-func SteamUtilsGetAPICallResult[T any](s steamUtils, apiCall SteamAPICall_t, callbackType int) (result T, completed, success bool) {
+func SteamUtilsGetAPICallResult[T any](apiCall SteamAPICall_t, callbackType int) (result T, completed, success bool) {
 	var failed bool
-	completed = ptrAPI_ISteamUtils_GetAPICallResult(uintptr(s), apiCall, uintptr(unsafe.Pointer(&result)), int32(unsafe.Sizeof(result)), int32(callbackType), uintptr(unsafe.Pointer(&failed)))
+	completed = ptrAPI_ISteamUtils_GetAPICallResult(ptrAPI_SteamUtils(), apiCall, uintptr(unsafe.Pointer(&result)), int32(unsafe.Sizeof(result)), int32(callbackType), uintptr(unsafe.Pointer(&failed)))
 	success = !failed
 	return
 }
