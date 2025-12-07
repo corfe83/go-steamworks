@@ -20,11 +20,11 @@ type LeaderboardScoreUploaded_t struct {
 	Success                  byte
 	_                        [3]byte // padding
 	SteamLeaderboard         SteamLeaderboard_t
-	core                     int32
+	Core                     int32
 	ScoreChanged             byte
 	_                        [3]byte // padding
-	lobalRankNew             int32
-	lobalRankPrevious        int32
+	GlobalRankNew            int32
+	GlobalRankPrevious       int32
 }
 
 type LeaderboardEntry_t struct {
