@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: Apache-2.0
+// SPDX-FileCopyrightText: 2021 The go-steamworks Authors
+
 //go:build !windows
 
 package steamworks
@@ -5,18 +8,6 @@ package steamworks
 import "unsafe"
 
 // Non-Windows platforms (Unix, macOS, FreeBSD) use VALVE_CALLBACK_PACK_SMALL as defined in steamclientpublic.h (4-byte alignment)
-
-type LeaderboardFindResult_t struct {
-	SteamLeaderboard SteamLeaderboard_t
-	LeaderboardFound byte
-	_                [3]byte // padding
-}
-
-type LeaderboardScoresDownloaded_t struct {
-	SteamLeaderboard        SteamLeaderboard_t
-	SteamLeaderboardEntries SteamLeaderboardEntries_t
-	EntryCount              int32
-}
 
 type LeaderboardScoreUploaded_t struct {
 	Success            byte

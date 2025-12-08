@@ -96,20 +96,15 @@ const (
 	ELeaderboardUploadScoreMethodForceUpdate ELeaderboardUploadScoreMethod = 2
 )
 
-// What go users see
-type LeaderboardEntry struct {
-	steamIDUser CSteamID
-	globalRank  int32
-	score       int32
-	details     []int32
-	UGC         UGCHandle_t
+type LeaderboardFindResult_t struct {
+	SteamLeaderboard SteamLeaderboard_t
+	LeaderboardFound byte
 }
 
-type LeaderboardScoreUploaded struct {
-	nScore              int32
-	bScoreChanged       bool
-	nGlobalRankNew      int32
-	nGlobalRankPrevious int32
+type LeaderboardScoresDownloaded_t struct {
+	SteamLeaderboard        SteamLeaderboard_t
+	SteamLeaderboardEntries SteamLeaderboardEntries_t
+	EntryCount              int32
 }
 
 type ISteamApps interface {
