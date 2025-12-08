@@ -34,7 +34,7 @@ type LeaderboardEntry_t struct {
 	GlobalRank  int32
 	Score       int32
 	Details     int32
-	ugc         [8]byte // if we use the actual UGCHandle_t here, struct size/alignment changes
+	ugc         [8]byte // we cannot use the actual UGCHandle_t type, because go tries to align it to 8 bytes (using 4 bytes of padding), which no longer matches the C struct
 }
 
 func (entry LeaderboardEntry_t) UGC() UGCHandle_t {

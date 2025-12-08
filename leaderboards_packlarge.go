@@ -36,6 +36,7 @@ type LeaderboardEntry_t struct {
 	ugc         UGCHandle_t
 }
 
+// See leaderboards_packsmall.go for explanation of why this is a function and not a direct member access
 func (me LeaderboardEntry_t) UGC() UGCHandle_t {
 	return me.ugc
 }
