@@ -295,7 +295,11 @@ func (s steamUserStats) DownloadLeaderboardEntries(hSteamLeaderboard SteamLeader
 
 func (s steamUserStats) GetDownloadedLeaderboardEntry(hSteamLeaderboardEntries SteamLeaderboardEntries_t, index int32, details []int32) (success bool, entry LeaderboardEntry) {
 	var rawEntry LeaderboardEntry_t
-	success = ptrAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(uintptr(s), hSteamLeaderboardEntries, index, uintptr(unsafe.Pointer(&rawEntry)), uintptr(unsafe.Pointer(&details[0])), int32(len(details)))
+	var detailsPtr uintptr
+	if len(details) > 0 {
+		detailsPtr = uintptr(unsafe.Pointer(&details[0]))
+	}
+	success = ptrAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(uintptr(s), hSteamLeaderboardEntries, index, uintptr(unsafe.Pointer(&rawEntry)), detailsPtr, int32(len(details)))
 	if !success {
 		return false, LeaderboardEntry{}
 	}
