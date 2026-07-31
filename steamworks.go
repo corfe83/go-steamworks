@@ -8,7 +8,7 @@ package steamworks
 type AppId_t uint32
 type CSteamID uint64
 type InputHandle_t uint64
-type steamAPICall_t uint64
+type SteamAPICall_t uint64
 type SteamLeaderboard_t uint64
 type SteamLeaderboardEntries_t uint64
 type UGCHandle_t uint64
@@ -171,9 +171,10 @@ type ISteamUserStats interface {
 	SetAchievement(name string) bool
 	ClearAchievement(name string) bool
 	StoreStats() bool
-	FindLeaderboard(name string, onComplete func(handle SteamLeaderboard_t, found bool, err error))
-	DownloadLeaderboardEntries(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardDataRequest ELeaderboardDataRequest, nRangeStart, nRangeEnd int32, onComplete func(entries []LeaderboardEntry, err error))
-	UploadLeaderboardScore(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardUploadScoreMethod ELeaderboardUploadScoreMethod, nScore int32, pScoreDetails []int32, onComplete func(result LeaderboardScoreUploaded, err error))
+	FindLeaderboard(name string) SteamAPICall_t
+	DownloadLeaderboardEntries(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardDataRequest ELeaderboardDataRequest, nRangeStart, nRangeEnd int32) SteamAPICall_t
+	UploadLeaderboardScore(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardUploadScoreMethod ELeaderboardUploadScoreMethod, nScore int32, pScoreDetails []int32) SteamAPICall_t
+	GetDownloadedLeaderboardEntry(hSteamLeaderboardEntries SteamLeaderboardEntries_t, index int32) (success bool, entry LeaderboardEntry)
 	GetLeaderboardEntryCount(hSteamLeaderboard SteamLeaderboard_t) int32
 }
 
