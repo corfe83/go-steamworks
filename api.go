@@ -293,28 +293,21 @@ func (s steamUserStats) DownloadLeaderboardEntries(hSteamLeaderboard SteamLeader
 	return ptrAPI_ISteamUserStats_DownloadLeaderboardEntries(uintptr(s), hSteamLeaderboard, eLeaderboardDataRequest, nRangeStart, nRangeEnd)
 }
 
-func (s steamUserStats) GetDownloadedLeaderboardEntry(hSteamLeaderboardEntries SteamLeaderboardEntries_t, index int32) (success bool, entry LeaderboardEntry) {
-	var rawEntry leaderboardEntry_t
-	success = ptrAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(uintptr(s), hSteamLeaderboardEntries, index, uintptr(unsafe.Pointer(&rawEntry)), 0, 0)
+func (s steamUserStats) GetDownloadedLeaderboardEntry(hSteamLeaderboardEntries SteamLeaderboardEntries_t, index int32, details []int32) (success bool, entry LeaderboardEntry) {
+	var rawEntry LeaderboardEntry_t
+	success = ptrAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(uintptr(s), hSteamLeaderboardEntries, index, uintptr(unsafe.Pointer(&rawEntry)), uintptr(unsafe.Pointer(&details[0])), int32(len(details)))
 	if !success {
 		return false, LeaderboardEntry{}
 	}
 
 	readEntry := rawEntry.Read()
-	if readEntry.details > 0 {
-		entry.details = make([]int32, readEntry.details)
-		success = ptrAPI_ISteamUserStats_GetDownloadedLeaderboardEntry(uintptr(s), hSteamLeaderboardEntries, index, uintptr(unsafe.Pointer(&rawEntry)), uintptr(unsafe.Pointer(&entry.details[0])), readEntry.details)
-		if !success {
-			return false, LeaderboardEntry{}
-		}
-	}
 
-	entry.globalRank = readEntry.globalRank
-	entry.score = readEntry.score
-	entry.steamIDUser = readEntry.steamIDUser
+	entry.GlobalRank = readEntry.GlobalRank
+	entry.Score = readEntry.Score
+	entry.SteamIDUser = readEntry.SteamIDUser
 	entry.UGC = readEntry.UGC
 
-	return
+	return true, entry
 }
 
 func (s steamUserStats) UploadLeaderboardScore(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardUploadScoreMethod ELeaderboardUploadScoreMethod, score int32, details []int32) SteamAPICall_t {

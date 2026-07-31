@@ -96,48 +96,32 @@ const (
 	ELeaderboardUploadScoreMethodForceUpdate ELeaderboardUploadScoreMethod = 2
 )
 
-type leaderboardFindResult struct {
-	steamLeaderboard SteamLeaderboard_t
-	leaderboardFound bool
+type LeaderboardFindResult struct {
+	SteamLeaderboard SteamLeaderboard_t
+	LeaderboardFound bool
 }
 
-type leaderboardScoresDownloaded struct {
-	steamLeaderboard        SteamLeaderboard_t
-	steamLeaderboardEntries SteamLeaderboardEntries_t
-	entryCount              int32
-}
-
-type leaderboardScoreUploaded struct {
-	success            bool
-	steamLeaderboard   SteamLeaderboard_t
-	score              int32
-	scoreChanged       bool
-	globalRankNew      int32
-	globalRankPrevious int32
-}
-
-type leaderboardEntry struct {
-	steamIDUser CSteamID
-	globalRank  int32
-	score       int32
-	details     int32
-	UGC         UGCHandle_t
-}
-
-// What go users see
-type LeaderboardEntry struct {
-	steamIDUser CSteamID
-	globalRank  int32
-	score       int32
-	details     []int32
-	UGC         UGCHandle_t
+type LeaderboardScoresDownloaded struct {
+	SteamLeaderboard        SteamLeaderboard_t
+	SteamLeaderboardEntries SteamLeaderboardEntries_t
+	EntryCount              int32
 }
 
 type LeaderboardScoreUploaded struct {
-	NScore              int32
-	BScoreChanged       bool
-	NGlobalRankNew      int32
-	NGlobalRankPrevious int32
+	Success            bool
+	SteamLeaderboard   SteamLeaderboard_t
+	Score              int32
+	ScoreChanged       bool
+	GlobalRankNew      int32
+	GlobalRankPrevious int32
+}
+
+type LeaderboardEntry struct {
+	SteamIDUser CSteamID
+	GlobalRank  int32
+	Score       int32
+	Details     int32
+	UGC         UGCHandle_t
 }
 
 type ISteamApps interface {
@@ -174,7 +158,7 @@ type ISteamUserStats interface {
 	FindLeaderboard(name string) SteamAPICall_t
 	DownloadLeaderboardEntries(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardDataRequest ELeaderboardDataRequest, nRangeStart, nRangeEnd int32) SteamAPICall_t
 	UploadLeaderboardScore(hSteamLeaderboard SteamLeaderboard_t, eLeaderboardUploadScoreMethod ELeaderboardUploadScoreMethod, nScore int32, pScoreDetails []int32) SteamAPICall_t
-	GetDownloadedLeaderboardEntry(hSteamLeaderboardEntries SteamLeaderboardEntries_t, index int32) (success bool, entry LeaderboardEntry)
+	GetDownloadedLeaderboardEntry(hSteamLeaderboardEntries SteamLeaderboardEntries_t, index int32, details []int32) (success bool, entry LeaderboardEntry)
 	GetLeaderboardEntryCount(hSteamLeaderboard SteamLeaderboard_t) int32
 }
 
