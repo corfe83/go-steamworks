@@ -134,10 +134,10 @@ type LeaderboardEntry struct {
 }
 
 type LeaderboardScoreUploaded struct {
-	nScore              int32
-	bScoreChanged       bool
-	nGlobalRankNew      int32
-	nGlobalRankPrevious int32
+	NScore              int32
+	BScoreChanged       bool
+	NGlobalRankNew      int32
+	NGlobalRankPrevious int32
 }
 
 type ISteamApps interface {
